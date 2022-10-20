@@ -1,0 +1,86 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: project
+  namespace: argocd
+  # colocar o finalizer do argo
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Sample project study
+  destinations:
+  - namespace: guestbook
+    server: https://kubernetes.default.svc
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+  - '*'
+  # Refinar permissões aqui libera tudo somente teste
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: argocd
+spec:
+  project: project
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    targetRevision: HEAD
+    path: guestbook
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: guestbook
+# ---
+# Example Setup others clusters
+
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: mycluster-secret
+#   labels:
+#     argocd.argoproj.io/secret-type: cluster
+# type: Opaque
+# stringData:
+#   name: mycluster.com
+#   server: https://mycluster.com
+#   config: |
+#     {
+#       "bearerToken": "<authentication token>",
+#       "tlsClientConfig": {
+#         "insecure": false,
+#         "caData": "<base64 encoded certificate>"
+#       }
+#     }
+# ---
+# Example setup Helm Repo public
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: istio
+#   namespace: argocd
+#   labels:
+#     argocd.argoproj.io/secret-type: repository
+# stringData:
+#   name: istio.io
+#   url: https://storage.googleapis.com/istio-prerelease/daily-build/master-latest-daily/charts
+#   type: helm
+# ---
+# Private
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: argo-helm
+#   namespace: argocd
+#   labels:
+#     argocd.argoproj.io/secret-type: repository
+# stringData:
+#   name: argo
+#   url: https://argoproj.github.io/argo-helm
+#   type: helm
+#   username: my-username
+#   password: my-password
+#   tlsClientCertData: ...
+#   tlsClientCertKey: ...
