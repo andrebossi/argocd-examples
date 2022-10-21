@@ -1,3 +1,6 @@
+apiVersionOverrides:
+  ingress: "networking.k8s.io/v1"
+
 redis-ha:
   enabled: true
 
@@ -5,6 +8,16 @@ controller:
   replicas: 1
 
 server:
+  metrics:
+    enabled: true
+  ingress:
+    enabled: true
+    https: false
+    #ingressClassName: traefik
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - "argo-master.127.0.0.1.nip.io" # 127.0.0.1
   autoscaling:
     enabled: true
     minReplicas: 2
@@ -19,5 +32,4 @@ applicationSet:
 
 crds:
   install: true
-
-crds.keep: false
+  keep: false
