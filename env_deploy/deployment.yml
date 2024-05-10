@@ -24,7 +24,7 @@ spec:
       containers:
       - name: nginx
         image: nginx:1.14.2
-         env:
+        env:
           - name: SAMPLE_TESTE
             value: "Hello"
           - name: SAMPLE_TESTE
