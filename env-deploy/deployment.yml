@@ -27,6 +27,8 @@ spec:
         env:
           - name: SAMPLE_TESTE
             value: "Hello"
+          - name: SAMPLE2_TESTE
+            value: "World"
         ports:
         - containerPort: 80
         resources:
